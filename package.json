@@ -1,0 +1,9 @@
+{
+  "name": "brijesh-birthday-netlify",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Brijesh birthday invitation website for Netlify",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

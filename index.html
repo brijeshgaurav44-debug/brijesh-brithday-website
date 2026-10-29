@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#21153f">
+<title>Happy Birthday Brijesh 🎂</title>
+<style>
+:root{--pink:#ff5ca8;--purple:#885bff;--ink:#25213b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#fff;background:radial-gradient(circle at top left,#482080 0,#21153f 45%,#101225 100%);display:grid;place-items:center;overflow-x:hidden}
+.confetti{position:fixed;inset:0;pointer-events:none;opacity:.55;background-image:radial-gradient(#ffce68 2px,transparent 3px),radial-gradient(#ff5ca8 2px,transparent 3px),radial-gradient(#8be9fd 2px,transparent 3px);background-size:80px 90px,110px 120px,130px 140px;background-position:0 0,35px 50px,60px 20px}
+.card{position:relative;width:min(92vw,620px);padding:36px 26px;border:1px solid #ffffff35;border-radius:28px;background:#ffffff12;backdrop-filter:blur(14px);box-shadow:0 24px 80px #0005;text-align:center}
+.badge{display:inline-block;padding:7px 13px;border:1px solid #ffffff35;border-radius:999px;background:#ffffff12;font-size:.88rem}
+h1{font-size:clamp(2.2rem,8vw,4.3rem);line-height:1.04;margin:22px 0 14px}
+.grad{background:linear-gradient(90deg,#ffd36a,#ff75b5,#b6a0ff);color:transparent;background-clip:text}
+p{color:#e4def8;line-height:1.6}
+button{border:0;border-radius:14px;padding:13px 20px;font-size:1rem;font-weight:750;cursor:pointer;transition:transform .15s,filter .15s}
+button:hover{transform:translateY(-2px);filter:brightness(1.08)}
+button:disabled{opacity:.55;cursor:wait}
+.primary{background:linear-gradient(100deg,#ff5ca8,#885bff);color:white;box-shadow:0 10px 28px #a33eff55}
+.modal{position:fixed;inset:0;display:none;place-items:center;padding:18px;background:#080717c9;z-index:5}
+.modal.show{display:grid}
+.dialog{width:min(100%,440px);border-radius:24px;padding:28px;background:#fff;color:var(--ink);text-align:center;box-shadow:0 25px 90px #0008;animation:pop .25s ease-out}
+@keyframes pop{from{transform:scale(.86);opacity:0}to{transform:scale(1);opacity:1}}
+.dialog h2{margin:4px 0 8px;font-size:1.8rem}
+.dialog p{color:#66617a}
+input{width:100%;padding:14px;border:1px solid #ded9ea;border-radius:12px;font-size:1rem;margin:8px 0 15px;outline-color:#885bff}
+.choices{display:flex;gap:12px}.choices button{flex:1}
+.yes{background:#16a36a;color:white}.no{background:#f2eff8;color:#443b5b}
+#status{min-height:24px;font-size:.92rem}
+footer{margin-top:25px;color:#bcb4d8;font-size:.82rem}
+.small{font-size:.78rem!important;color:#7c758d!important}
+</style>
+</head>
+<body>
+<div class="confetti"></div>
+<main class="card">
+  <span class="badge">🎉 31 OCTOBER 2026 · BIRTHDAY DAY</span>
+  <h1>It's my birthday!<br><span class="grad">Brijesh turns the vibe on.</span></h1>
+  <p>Good people, great memories, and one big question…<br><strong>Are you coming to the party?</strong></p>
+  <button class="primary" id="openBtn">🎁 Open your birthday invite</button>
+  <footer>Made with 🎂 for Brijesh<br>Your name and party choice will be recorded when you submit.</footer>
+</main>
+<div class="modal show" id="welcomeModal" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+  <div class="dialog">
+    <div style="font-size:3rem">🎂✨🎈</div>
+    <h2 id="welcomeTitle">Happy Birthday, <span style="color:#9a4cff">Brijesh!</span></h2>
+    <p>You're invited to the birthday vibes. Tap below to continue!</p>
+    <button class="primary" id="continueBtn">Let's celebrate 🎉</button>
+  </div>
+</div>
+<div class="modal" id="formModal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+  <div class="dialog">
+    <div style="font-size:2.4rem">🥳</div>
+    <h2 id="formTitle">First things first…</h2>
+    <p>What is your name?</p>
+    <form id="responseForm">
+      <input id="name" name="name" maxlength="80" autocomplete="name" placeholder="Enter your name" required>
+      <p style="margin:0 0 12px">Do you want to party with Brijesh?</p>
+      <div class="choices">
+        <button class="yes" type="button" data-party="Yes">YES! 🪩</button>
+        <button class="no" type="button" data-party="No">No 😅</button>
+      </div>
+      <p id="status" aria-live="polite"></p>
+      <p class="small">Your response is saved for the birthday host.</p>
+    </form>
+  </div>
+</div>
+<script>
+const welcomeModal=document.getElementById('welcomeModal');
+const formModal=document.getElementById('formModal');
+function showForm(){welcomeModal.classList.remove('show');formModal.classList.add('show');setTimeout(()=>document.getElementById('name').focus(),100)}
+document.getElementById('continueBtn').addEventListener('click',showForm);
+document.getElementById('openBtn').addEventListener('click',()=>welcomeModal.classList.add('show'));
+document.querySelectorAll('[data-party]').forEach(btn=>btn.addEventListener('click',async()=>{
+  const name=document.getElementById('name').value.trim();
+  const status=document.getElementById('status');
+  if(!name){status.textContent='Please enter your name first 🙂';document.getElementById('name').focus();return}
+  status.textContent='Saving your answer…';
+  document.querySelectorAll('[data-party]').forEach(b=>b.disabled=true);
+  try{
+    const res=await fetch('/.netlify/functions/response',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,party:btn.dataset.party})});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Could not save response.');
+    status.textContent=btn.dataset.party==='Yes'?'Yay! See you at the party 🎉':'Thanks for letting Brijesh know 💜';
+    setTimeout(()=>{formModal.classList.remove('show');document.getElementById('name').value='';status.textContent='';document.querySelectorAll('[data-party]').forEach(b=>b.disabled=false)},1800);
+  }catch(e){
+    status.textContent='Response could not be saved yet. Please try again later.';
+    document.querySelectorAll('[data-party]').forEach(b=>b.disabled=false);
+  }
+}));
+</script>
+</body>
+</html>
